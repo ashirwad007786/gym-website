@@ -1,2 +1,2 @@
 # gym-website
-It is present at ashirwadakb007.000webhostapp.com
+It is present at ashirwadbarnwal15.me/gym-website
