@@ -74,21 +74,7 @@
   z-index: 9999;
   transition: opacity 0.3s ease;">
 </div>
-  <div id="loadingOverlay" style="
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;">
-  <div class="loader"></div>
-</div>
-
-
+  
   <!-- Splash Screen -->
   <div id="splash" class="splash-container">
     <img src="images/airplane.png" alt="Airplane" />
@@ -180,14 +166,8 @@
     const sendUpdateBtn = document.getElementById('sendUpdateBtn');
 
     let currentRecordId = '';
-    const loaderOverlay = document.getElementById('loadingOverlay');
 
-    function showLoader() {
-       loaderOverlay.style.display = 'flex';
-       }
-    function hideLoader() {
-      loaderOverlay.style.display = 'none';
-    }
+   
     // Splash -> Login
     setTimeout(() => {
       splash.style.display = 'none';
@@ -219,7 +199,6 @@ function showToast(message, duration = 3000) {
     fetchBtn.addEventListener('click', async () => {
       const query = document.getElementById('baggageInput').value.trim();
       if (!query) return alert('Please enter a baggage ID or name');
-      showLoader();
       try {
         const resp = await fetch(`${API_URL}?name=${encodeURIComponent(query)}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -240,9 +219,7 @@ function showToast(message, duration = 3000) {
       } catch (err) {
         alert(`Error fetching details: ${err.message}`);
       }
-       finally {
-         hideLoader();
-       }
+       
     });
 
     // Clear to fetch another
@@ -260,7 +237,6 @@ function showToast(message, duration = 3000) {
       if (!currentRecordId) return alert('No baggage selected');
       const baggageName = document.getElementById('luggageName').textContent;
       const fullName = `${baggageName} (${loc}) ${status}`;
-      showLoader();
       try {
         const payload = {
        object: 'Baggage_Tracking__c',
@@ -281,9 +257,7 @@ function showToast(message, duration = 3000) {
       } catch (err) {
         alert(`Error creating record: ${err.message}`);
       }
-       finally {
-         hideLoader();
-       }
+      
     });
   </script>
 </body>
