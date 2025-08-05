@@ -204,7 +204,6 @@
       const status = document.getElementById('statusSelect').value;
       if (!loc) return alert('Please select a location');
       if (!currentRecordId) return alert('No baggage selected');
-      const status = "In Transit"; // or dynamically choose from a dropdown if needed
 const baggageName = document.getElementById('luggageName').textContent;
 const fullName = `${baggageName} (${loc}) ${status}`;
 
