@@ -1,188 +1,187 @@
-<!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
 <!DOCTYPE html>
-<html lang="en-US">
-    <!--<![endif]-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyLink Airways Web UI</title>
+  <style>
+    /* Base resets */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background-color: #f9d2d2; color: #333; }
+    button { cursor: pointer; }
 
-    <head>
-        <meta charset="utf-8">
-        <title>
-            GYM ZONE!
-        </title><!-- Behavioral Meta Data -->
-        <meta content="yes" name="apple-mobile-web-app-capable">
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"><!-- Core Meta Data -->
-        <meta content="Ashirwad" name="author">
-        <meta content="BEST GYM IN YOUR AREA!" name="description">
-        <meta content="Comming Soon, Responsive, Landing Page, One Page" name="keywords"><!-- Open Graph Meta Data -->
-        <meta content="BEST GYM IN YOUR AREA!">
-        <meta content="Ashirwad">
-        <meta content="Ashirwad">
-        <meta content="website">
-        <meta content="index.html"><!-- Twitter Card Meta Data -->
-        <meta content="summary" name="twitter:card">
-        <meta content="@ashirwad" name="twitter:site">
-        <meta content="@ashirwad" name="twitter:creator">
-        <meta content="Ashirwad" name="twitter:title">
-        <meta content="GYM ZONE - BEST GYM IN YOUR AREA!" name="twitter:description">
+    /* Splash screen */
+    .splash-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100vh; background-color: #f9d2d2;
+      text-align: center;
+    }
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #e85a4f;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .splash-container img { width: 100px; height: 100px; margin-bottom: 20px; }
+    .splash-container h1 { font-size: 32px; color: #fff; margin-bottom: 20px; }
 
-        <link href="favicon.png" rel="shortcut icon" type="image/png">
+    /* Main containers */
+    .container { max-width: 400px; margin: 40px auto; padding: 20px;
+      background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .container img { width: 150px; height: 150px; margin-bottom: 10px; }
+    .container h2 { font-size: 28px; margin-bottom: 10px; }
+    .container h3 { font-size: 20px; margin-bottom: 20px; }
+    .container input, .container select {
+      width: 100%; padding: 10px; margin: 10px 0;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    .container button {
+      width: 100%; padding: 10px; margin: 10px 0;
+      background: #e85a4f; border: none; color: white; border-radius: 4px;
+      font-size: 16px;
+    }
 
-        <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        
-        <!-- CSS -->
-        <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,900' rel='stylesheet' type='text/css'><!-- Styles -->
-        <link href="css/loader.css" rel="stylesheet" type="text/css">
-        <link href="css/normalize.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link href="css/style.css" rel="stylesheet" type="text/css">
-        <!--[if lt IE 9]>
-            <link rel="stylesheet" type="text/css" href="css/ie.css" />
-        <![endif]-->
-        <!-- Javascript -->
+    /* Details view */
+    .details {
+      text-align: left; margin-top: 20px;
+    }
+    .details h4 { font-size: 20px; margin-bottom: 12px; }
+    .details p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <!-- Splash Screen -->
+  <div id="splash" class="splash-container">
+    <img src="images/airplane.png" alt="Airplane" />
+    <h1>SkyLink Airways</h1>
+    <div class="loader"></div>
+  </div>
 
-        <script src="js/jquery.js"></script>
-    </head>
-    <body>
-        <div class="preloader">
-            <div class="loading">
-                <h2>
-                    Loading...
-                </h2>
-                <span class="progress"></span>
-            </div>
-        </div>
+  <!-- Login Screen -->
+  <div id="login" class="container" style="display:none;">
+    <img src="images/airplane.png" alt="Airplane" />
+    <h2>Login to</h2>
+    <h3>SkyLink Airways</h3>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+  </div>
 
-        <div class="wrapper">
-            <ul class="scene unselectable" data-friction-x="0.1" data-friction-y="0.1" data-scalar-x="25" data-scalar-y="15" id="scene">
-                <li class="layer" data-depth="0.00">
-                </li>
-                <!-- BG -->
+  <!-- Main Content -->
+  <div id="main" class="container" style="display:none;">
+    <input type="text" id="baggageInput" placeholder="Enter Baggage ID or Name" />
+    <button id="fetchBtn">Fetch Details</button>
 
-                <li class="layer" data-depth="0.10">
-                    <div class="background">
-                    </div>
-                </li>
+    <div id="details" class="details" style="display:none;">
+      <h4>Luggage Details</h4>
+      <p>ID: <span id="luggageId"></span></p>
+      <p>Name: <span id="luggageName"></span></p>
+      <p>PNR: <span id="luggagePnr"></span></p>
+      <p>Weight: <span id="luggageWeight"></span></p>
 
-                <!-- Hero -->
+      <select id="locationSelect">
+        <option value="">Select Location</option>
+        <option value="Check-in Counter">Check-in Counter</option>
+        <option value="Gate A1">Gate A1</option>
+        <option value="Baggage Hold">Baggage Hold</option>
+        <option value="Customer Service">Customer Service</option>
+      </select>
+      <button id="sendUpdateBtn">Create Tracking Record</button>
+      <button id="clearBtn">Fetch Another</button>
+    </div>
+  </div>
 
-                <li class="layer" data-depth="0.20">
-                    <div class="title">
-                        <h2>
-                           <marquee><span style="color:white"> GYM ZONE</span></marquee>
-                        </h2>
-                        <!<span class="line"</span>
-                    </div>
-                </li>
+  <script>
+    // Config for your backend proxy (PHP endpoint)
+    const API_URL = 'https://ascentracapital.com/salesforce.php';
 
-                <li class="layer" data-depth="0.25">
-                    <div class="sphere">
-                        <img alt="sphere" src="images/sphere.png">
-                    </div>
-                </li>
+    // UI elements
+    const splash = document.getElementById('splash');
+    const login = document.getElementById('login');
+    const main = document.getElementById('main');
+    const details = document.getElementById('details');
+    const loginBtn = document.getElementById('loginBtn');
+    const fetchBtn = document.getElementById('fetchBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const sendUpdateBtn = document.getElementById('sendUpdateBtn');
 
-                <li class="layer" data-depth="0.30">
-                    <div class="hero">
-                        <h3 id="countdown">
-                            
-                        </h3>
+    let currentRecordId = '';
 
-                       <!-- <p class="sub-title">
-                            <h2>Join Now</h2>
-                        </p>-->
-                    </div>
-                </li>
-                
+    // Splash -> Login
+    setTimeout(() => {
+      splash.style.display = 'none';
+      login.style.display = 'block';
+    }, 4000);
 
-                <li class="layer" data-depth="0.40">
-                    <div class="depth-1 flake1">
-                        <img alt="flake" src="images/flakes/depth1/flakes1.png">
-                    </div>
+    // Login click: show main
+    loginBtn.addEventListener('click', () => {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (!user || !pass) return alert('Username and password required');
+      login.style.display = 'none';
+      main.style.display = 'block';
+    });
 
-                    <div class="depth-1 flake2">
-                        <img alt="flake" src="images/flakes/depth1/flakes2.png">
-                    </div>
+    // Fetch luggage details via your API proxy
+    fetchBtn.addEventListener('click', async () => {
+      const query = document.getElementById('baggageInput').value.trim();
+      if (!query) return alert('Please enter a baggage ID or name');
+      try {
+        const resp = await fetch(`${API_URL}?object=Baggage__c&id=${encodeURIComponent(query)}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        currentRecordId = data.Id || query;
+        // populate UI
+        details.style.display = 'block';
+        document.getElementById('luggageId').textContent = currentRecordId;
+        document.getElementById('luggageName').textContent = data.Name;
+        document.getElementById('luggagePnr').textContent = data.Booking__r?.Name || '';
+        document.getElementById('luggageWeight').textContent = data.Baggage_Weight__c;
+      } catch (err) {
+        alert(`Error fetching details: ${err.message}`);
+      }
+    });
 
-                    <div class="depth-1 flake3">
-                        <img alt="flake" src="images/flakes/depth1/flakes3.png">
-                    </div>
+    // Clear to fetch another
+    clearBtn.addEventListener('click', () => {
+      details.style.display = 'none';
+      document.getElementById('baggageInput').value = '';
+      currentRecordId = '';
+    });
 
-                    <div class="depth-1 flake4">
-                        <img alt="flake" src="images/flakes/depth1/flakes4.png">
-                    </div>
-                </li>
-
-                <li class="layer" data-depth="0.50">
-                    <div class="depth-2 flake1">
-                        <img alt="flake" src="images/flakes/depth2/flakes1.png">
-                    </div>
-
-                    <div class="depth-2 flake2">
-                        <img alt="flake" src="images/flakes/depth2/flakes2.png">
-                    </div>
-                </li>
-
-                <li class="layer" data-depth="0.60">
-                    <div class="depth-3 flake1">
-                        <img alt="flake" src="images/flakes/depth3/flakes1.png">
-                    </div>
-
-                    <div class="depth-3 flake2">
-                        <img alt="flake" src="images/flakes/depth3/flakes2.png">
-                    </div>
-
-                    <div class="depth-3 flake3">
-                        <img alt="flake" src="images/flakes/depth3/flakes3.png">
-                    </div>
-
-                    <div class="depth-3 flake4">
-                        <img alt="flake" src="images/flakes/depth3/flakes4.png">
-                    </div>
-                </li>
-
-                <li class="layer" data-depth="0.80">
-                    <div class="depth-4">
-                        <img alt="flake" src="images/flakes/depth4/flakes.png">
-                    </div>
-                </li>
-
-                <li class="layer" data-depth="1.00">
-                    <div class="depth-5">
-                        <img alt="flake" src="images/flakes/depth5/flakes.png">
-                    </div>
-                </li>
-                <!-- Contact -->
-
-                <li class="layer" data-depth="0.20">
-                    <div class="contact">
-                        <a href="join.html" target="_blank">
-                        <img alt="join" src="images/join.png"></a>
-                        <ul class="icons">
-                            <li>
-                                <a class="facebook" href="https://www.facebook.com/ashirwad.barnwal.5"><i class="fa fa-facebook"></i></a>
-                            </li>
-
-                            <li>
-                                <a class="twitter" href="https://twitter.com/sarcsmwadiprani"><i class="fa fa-twitter"></i></a>
-                            </li>
-
-                            <li>
-                                <a class="google" href="https://plus.google.com/108753738167352997313"><i class="fa fa-google"></i></a>
-                            </li>
-                        </ul>
-                        Designed by <a href="https://www.instagram.com/ashirwad97/?hl=en" target="_blank"><span style= color:yellow>ASHIRWAD BARNWAL</span></a>
-                    </br>
-                       <a class="mail" href="ashirwadbarnwal15@gmail.com">ashirwadbarnwal15@gmail.com</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Javascript -->
-        <script src="js/plugins.js"></script> 
-        <script src="js/jquery.countdown.min.js"></script> 
-        <script src="js/main.js"></script>
-
-    </body>
+    // Create tracking record via API proxy
+    sendUpdateBtn.addEventListener('click', async () => {
+      const loc = document.getElementById('locationSelect').value;
+      if (!loc) return alert('Please select a location');
+      if (!currentRecordId) return alert('No baggage selected');
+      try {
+        const payload = {
+          object: 'Tracking__c',
+          Baggage__c: currentRecordId,
+          Location__c: loc
+        };
+        const resp = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const result = await resp.json();
+        alert(`Tracking record created: ${result.id || result.id}`);
+        clearBtn.click();
+      } catch (err) {
+        alert(`Error creating record: ${err.message}`);
+      }
+    });
+  </script>
+</body>
 </html>
