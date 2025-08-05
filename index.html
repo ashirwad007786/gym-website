@@ -59,6 +59,22 @@
   </style>
 </head>
 <body>
+  <div id="toast" style="
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 9999;
+  transition: opacity 0.3s ease;">
+</div>
+
   <!-- Splash Screen -->
   <div id="splash" class="splash-container">
     <img src="images/airplane.png" alt="Airplane" />
@@ -165,7 +181,19 @@
       login.style.display = 'none';
       main.style.display = 'block';
     });
-
+function showToast(message, duration = 3000) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.style.display = 'none', 300); // wait for fade out
+  }, duration);
+  details.style.display = 'none';
+        document.getElementById('baggageInput').value = '';
+        currentRecordId = '';
+}
     // Fetch luggage details via your API proxy
     fetchBtn.addEventListener('click', async () => {
       const query = document.getElementById('baggageInput').value.trim();
@@ -225,8 +253,7 @@ const fullName = `${baggageName} (${loc}) ${status}`;
         });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const result = await resp.json();
-        alert(`Tracking record created: ${result.id || result.id}`);
-        clearBtn.click();
+        showToast("Tracking record created successfully!");
       } catch (err) {
         alert(`Error creating record: ${err.message}`);
       }
