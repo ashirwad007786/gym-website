@@ -216,6 +216,8 @@ const fullName = `${baggageName} (${loc}) ${status}`;
         Status__c: status,
         Name: fullName
         };
+        console.log('Sending payload:', payload);
+        console.log('Stringify payload:', JSON.stringify(payload));
         const resp = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
