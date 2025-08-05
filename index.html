@@ -208,7 +208,7 @@ function showToast(message, duration = 3000) {
         currentRecordId = data.Id || query;
         // populate UI
         details.style.display = 'block';
-        document.getElementById('luggageId').textContent = currentRecordId;
+        //document.getElementById('luggageId').textContent = currentRecordId;
         document.getElementById('luggageName').textContent = data.Name;
         document.getElementById('luggagePnr').textContent = data.Booking__r?.Name || '';
         document.getElementById('luggageLastLocation').textContent = data.Location__c;
