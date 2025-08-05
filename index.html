@@ -29,8 +29,8 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-    .splash-container img { width: 100px; height: 100px; margin-bottom: 20px; }
-    .splash-container h1 { font-size: 32px; color: #fff; margin-bottom: 20px; }
+    .splash-container img { width: 150px; height: 150px; margin-bottom: 20px; }
+    .splash-container h1 { font-size: 36px; color: #fff; margin-bottom: 20px; }
 
     /* Main containers */
     .container { max-width: 350px; margin: 40px auto; padding: 20px;
@@ -74,6 +74,20 @@
   z-index: 9999;
   transition: opacity 0.3s ease;">
 </div>
+  <div id="loadingOverlay" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;">
+  <div class="loader"></div>
+</div>
+
 
   <!-- Splash Screen -->
   <div id="splash" class="splash-container">
@@ -85,7 +99,7 @@
   <!-- Login Screen -->
   <div id="login" class="container" style="display:none;">
     <img src="images/airplane.png" alt="Airplane" />
-    <h2>Login to</h2>
+    <h2>Welcome to</h2>
     <h3>SkyLink Airways</h3>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
@@ -99,11 +113,11 @@
 
     <div id="details" class="details" style="display:none;">
       <h4>Luggage Details</h4>
-      <p><b>ID:</b> <span id="luggageId"></span></p>
       <p><b>Name:</b> <span id="luggageName"></span></p>
       <p><b>PNR:</b> <span id="luggagePnr"></span></p>
       <p><b>Weight:</b> <span id="luggageWeight"></span></p>
       <p><b>Last Location:</b> <span id="luggageLastLocation"></span></p>
+      <p><b>Last Status:</b> <span id="luggageLastStatus"></span></p>
       <p><b>Source:</b> <span id="luggageSource"></span></p>
       <p><b>Destination:</b> <span id="luggageDestination"></span></p>
 
@@ -166,7 +180,14 @@
     const sendUpdateBtn = document.getElementById('sendUpdateBtn');
 
     let currentRecordId = '';
+    const loaderOverlay = document.getElementById('loadingOverlay');
 
+    function showLoader() {
+       loaderOverlay.style.display = 'flex';
+       }
+    function hideLoader() {
+      loaderOverlay.style.display = 'none';
+    }
     // Splash -> Login
     setTimeout(() => {
       splash.style.display = 'none';
@@ -198,6 +219,7 @@ function showToast(message, duration = 3000) {
     fetchBtn.addEventListener('click', async () => {
       const query = document.getElementById('baggageInput').value.trim();
       if (!query) return alert('Please enter a baggage ID or name');
+      showLoader();
       try {
         const resp = await fetch(`${API_URL}?name=${encodeURIComponent(query)}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -211,12 +233,16 @@ function showToast(message, duration = 3000) {
         document.getElementById('luggageName').textContent = data.Name;
         document.getElementById('luggagePnr').textContent = data.Booking__r?.Name || '';
         document.getElementById('luggageLastLocation').textContent = data.Location__c;
+        document.getElementById('luggageLastStatus').textContent = data.Status__c;
         document.getElementById('luggageWeight').textContent = data.Baggage_Weight__c + ' kg';
         document.getElementById('luggageSource').textContent = data.Booking__r?.Flight__r?.Source_City__c  || '';
         document.getElementById('luggageDestination').textContent = data.Booking__r?.Flight__r?.Destination_City__c ;
       } catch (err) {
         alert(`Error fetching details: ${err.message}`);
       }
+       finally {
+         hideLoader();
+       }
     });
 
     // Clear to fetch another
@@ -232,10 +258,9 @@ function showToast(message, duration = 3000) {
       const status = document.getElementById('statusSelect').value;
       if (!loc) return alert('Please select a location');
       if (!currentRecordId) return alert('No baggage selected');
-const baggageName = document.getElementById('luggageName').textContent;
-const fullName = `${baggageName} (${loc}) ${status}`;
-
-
+      const baggageName = document.getElementById('luggageName').textContent;
+      const fullName = `${baggageName} (${loc}) ${status}`;
+      showLoader();
       try {
         const payload = {
        object: 'Baggage_Tracking__c',
@@ -245,7 +270,6 @@ const fullName = `${baggageName} (${loc}) ${status}`;
         Name: fullName
         };
         console.log('Sending payload:', payload);
-        console.log('Stringify payload:', JSON.stringify(payload));
         const resp = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -257,6 +281,9 @@ const fullName = `${baggageName} (${loc}) ${status}`;
       } catch (err) {
         alert(`Error creating record: ${err.message}`);
       }
+       finally {
+         hideLoader();
+       }
     });
   </script>
 </body>
