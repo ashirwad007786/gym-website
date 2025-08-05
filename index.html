@@ -142,7 +142,9 @@
       try {
         const resp = await fetch(`${API_URL}?name=${encodeURIComponent(query)}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
+        const result = await resp.json();
+        const data = result.records?.[0];
+        if (!data) throw new Error('No BAGGAGE found');
         currentRecordId = data.Id || query;
         // populate UI
         details.style.display = 'block';
