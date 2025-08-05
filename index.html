@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SkyLink Airways Web UI</title>
+  <title>SkyLink Airways</title>
   <style>
     /* Base resets */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,6 +87,10 @@
       <p>Name: <span id="luggageName"></span></p>
       <p>PNR: <span id="luggagePnr"></span></p>
       <p>Weight: <span id="luggageWeight"></span></p>
+      <<p>Last Location: <span id="luggageLastLocation"></span></p>
+      <p>Source: <span id="luggageSource"></span></p>
+      <p>Destination: <span id="luggageDestination"></span></p>
+
 
       <select id="locationSelect">
         <option value="">Select Location</option>
@@ -136,7 +140,7 @@
       const query = document.getElementById('baggageInput').value.trim();
       if (!query) return alert('Please enter a baggage ID or name');
       try {
-        const resp = await fetch(`${API_URL}?object=Baggage__c&id=${encodeURIComponent(query)}`);
+        const resp = await fetch(`${API_URL}??name=${encodeURIComponent(query)}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
         currentRecordId = data.Id || query;
@@ -145,7 +149,10 @@
         document.getElementById('luggageId').textContent = currentRecordId;
         document.getElementById('luggageName').textContent = data.Name;
         document.getElementById('luggagePnr').textContent = data.Booking__r?.Name || '';
-        document.getElementById('luggageWeight').textContent = data.Baggage_Weight__c;
+        document.getElementById('luggageLastLocation').textContent = data.Location__c;
+        document.getElementById('luggageWeight').textContent = data.Baggage_Weight__c + ' kg';
+        document.getElementById('luggageSource').textContent = data.Booking__r?.Flight__r?.Source_City__c  || '';
+        document.getElementById('luggageDestination').textContent = data.Booking__r?.Flight__r?.Destination_City__c ;
       } catch (err) {
         alert(`Error fetching details: ${err.message}`);
       }
@@ -163,11 +170,18 @@
       const loc = document.getElementById('locationSelect').value;
       if (!loc) return alert('Please select a location');
       if (!currentRecordId) return alert('No baggage selected');
+      const status = "In Transit"; // or dynamically choose from a dropdown if needed
+const baggageName = document.getElementById('luggageName').textContent;
+const fullName = `${baggageName} (${loc}) ${status}`;
+
+
       try {
         const payload = {
-          object: 'Tracking__c',
-          Baggage__c: currentRecordId,
-          Location__c: loc
+       object: 'Baggage_Tracking__c',
+        Baggage__c: currentRecordId,
+        Location__c: loc,
+        Status__c: status,
+        Name: fullName
         };
         const resp = await fetch(API_URL, {
           method: 'POST',
