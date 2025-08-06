@@ -236,7 +236,7 @@ function showToast(message, duration = 3000) {
       if (!loc) return alert('Please select a location');
       if (!currentRecordId) return alert('No baggage selected');
       const baggageName = document.getElementById('luggageName').textContent;
-      const fullName = `${baggageName} (${loc}) ${status}`;
+      const fullName = `${baggageName} - ${loc} (${status})`; 
       try {
         const payload = {
        object: 'Baggage_Tracking__c',
